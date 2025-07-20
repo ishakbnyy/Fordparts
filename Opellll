@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benyahya AutoParts - Pièces détachées Opel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1e69b8; /* Opel blue */
+            --secondary-color: #f7941d; /* Opel orange */
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        .navbar-brand img {
+            height: 40px;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/random/1200x400/?opel,car,workshop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .product-card {
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .product-img {
+            height: 200px;
+            object-fit: contain;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .price {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 40px 0;
+        }
+        .language-switcher {
+            cursor: pointer;
+        }
+        .hidden-stock {
+            display: none;
+        }
+        .admin-view .hidden-stock {
+            display: block;
+            color: red;
+            font-weight: bold;
+        }
+        .rtl-text {
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Toggle Button -->
+    <div class="text-end mt-2 me-2">
+        <button id="adminToggle" class="btn btn-sm btn-warning">
+            <i class="fas fa-eye-slash"></i> <span data-lang="fr">Vue Admin</span><span data-lang="ar" style="display:none;">وحة التحكم</span>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Opel_logo_2017.svg/1200px-Opel_logo_2017.svg.png" alt="Benyahya AutoParts">
+                <span class="ms-2">Benyahya AutoParts</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-lang="fr">Accueil</a>
+                        <a class="nav-link active" href="#" data-lang="ar" style="display:none;">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#products" data-lang="fr">Produits</a>
+                        <a class="nav-link" href="#products" data-lang="ar" style="display:none;">المنتجات</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about" data-lang="fr">À propos</a>
+                        <a class="nav-link" href="#about" data-lang="ar" style="display:none;">معلومات عنا</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact" data-lang="fr">Contact</a>
+                        <a class="nav-link" href="#contact" data-lang="ar" style="display:none;">اتصل بنا</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <div class="language-switcher me-3 text-white">
+                        <span class="lang-fr">FR</span> / <span class="lang-ar">AR</span>
+                    </div>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Rechercher..." data-lang="fr">
+                        <input class="form-control me-2" type="search" placeholder="بحث..." data-lang="ar" style="display:none;">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 data-lang="fr">Pièces détachées Opel en Algérie</h1>
+            <h1 data-lang="ar" style="display:none;">قطع غيار أوبل في الجزائر</h1>
+            <p class="lead" data-lang="fr">Toutes les pièces automobiles originales et compatibles pour votre véhicule Opel</p>
+            <p class="lead" data-lang="ar" style="display:none;">جميع قطع غيار السيارات الأصلية والمتوافقة لسيارتك أوبل</p>
+            <a href="#products" class="btn btn-primary btn-lg mt-3" data-lang="fr">Voir nos produits</a>
+            <a href="#products" class="btn btn-primary btn-lg mt-3" data-lang="ar" style="display:none;">عرض منتجاتنا</a>
+        </div>
+    </section>
+
+    <!-- Product Categories -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5" data-lang="fr">Catégories de pièces</h2>
+            <h2 class="text-center mb-5" data-lang="ar" style="display:none;">فئات القطع</h2>
+            <div class="row">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card product-card text-center">
+                        <img src="https://www.autodoc.co.uk/pics/cat/categories/r_12.png" class="card-img-top" alt="Moteur">
+                        <div class="card-body">
+                            <h5 class="card-title" data-lang="fr">Moteur</h5>
+                            <h5 class="card-title" data-lang="ar" style="display:none;">المحرك</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card product-card text-center">
+                        <img src="https://www.autodoc.co.uk/pics/cat/categories/r_13.png" class="card-img-top" alt="Freinage">
+                        <div class="card-body">
+                            <h5 class="card-title" data-lang="fr">Freinage</h5>
+                            <h5 class="card-title" data-lang="ar" style="display:none;">المكابح</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card product-card text-center">
+                        <img src="https://www.autodoc.co.uk/pics/cat/categories/r_14.png" class="card-img-top" alt="Suspension">
+                        <div class="card-body">
+                            <h5 class="card-title" data-lang="fr">Suspension</h5>
+                            <h5 class="card-title" data-lang="ar" style="display:none;">التعليق</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card product-card text-center">
+                        <img src="https://www.autodoc.co.uk/pics/cat/categories/r_15.png" class="card-img-top" alt="Transmission">
+                        <div class="card-body">
+                            <h5 class="card-title" data-lang="fr">Transmission</h5>
+                            <h5 class="card-title" data-lang="ar" style="display:none;">ناقل الحركة</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5" data-lang="fr">Nos pièces Opel</h2>
+            <h2 class="text-center mb-5" data-lang="ar" style="display:none;">قطع أوبل لدينا</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <select class="form-select" id="modelFilter">
+                        <option value="" data-lang="fr">Tous les modèles</option>
+                        <option value="" data-lang="ar" style="display:none;">جميع الموديلات</option>
+                        <option value="Corsa">Opel Corsa</option>
+                        <option value="Astra">Opel Astra</option>
+                        <option value="Insignia">Opel Insignia</option>
+                        <option value="Vectra">Opel Vectra</option>
+                        <option value="Zafira">Opel Zafira</option>
+                        <option value="Meriva">Opel Meriva</option>
+                        <option value="Mokka">Opel Mokka</option>
+                        <option value="Crossland">Opel Crossland</option>
+                        <option value="Grandland">Opel Grandland</option>
+                        <option value="Combo">Opel Combo</option>
+                        <option value="Movano">Opel Movano</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="" data-lang="fr">Toutes les catégories</option>
+                        <option value="" data-lang="ar" style="display:none;">جميع الفئات</option>
+                        <option value="Moteur" data-lang="fr">Moteur</option>
+                        <option value="Moteur" data-lang="ar" style="display:none;">المحرك</option>
+                        <option value="Freinage" data-lang="fr">Freinage</option>
+                        <option value="Freinage" data-lang="ar" style="display:none;">المكابح</option>
+                        <option value="Suspension" data-lang="fr">Suspension</option>
+                        <option value="Suspension" data-lang="ar" style="display:none;">التعليق</option>
+                        <option value="Transmission" data-lang="fr">Transmission</option>
+                        <option value="Transmission" data-lang="ar" style="display:none;">ناقل الحركة</option>
+                        <option value="Électricité" data-lang="fr">Électricité</option>
+                        <option value="Électricité" data-lang="ar" style="display:none;">الكهرباء</option>
+                        <option value="Carrosserie" data-lang="fr">Carrosserie</option>
+                        <option value="Carrosserie" data-lang="ar" style="display:none;">هيكل السيارة</option>
+                        <option value="Filtration" data-lang="fr">Filtration</option>
+                        <option value="Filtration" data-lang="ar" style="display:none;">الفلترة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" id="productContainer">
+                <!-- Product cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2 data-lang="fr">À propos de Benyahya AutoParts</h2>
+                    <h2 data-lang="ar" style="display:none;">معلومات عن بن يحيى لقطع الغيار</h2>
+                    <p data-lang="fr">
+                        Benyahya AutoParts est le spécialiste des pièces détachées Opel en Algérie. Nous fournissons des pièces de qualité 
+                        pour tous les modèles Opel. Avec des années d'expérience dans le domaine automobile, 
+                        nous garantissons des produits originaux et compatibles à des prix compétitifs.
+                    </p>
+                    <p data-lang="ar" style="display:none;">
+                        بن يحيى لقطع الغيار هو المتخصص في قطع غيار أوبل في الجزائر. نوفر قطع غيار عالية الجودة لجميع موديلات أوبل. 
+                        مع سنوات من الخبرة في مجال السيارات، نضمن منتجات أصلية ومتوافقة بأسعار تنافسية.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <h2 data-lang="fr">Pourquoi choisir Benyahya AutoParts?</h2>
+                    <h2 data-lang="ar" style="display:none;">لماذا تختار بن يحيى لقطع الغيار؟</h2>
+                    <ul data-lang="fr">
+                        <li>Pièces 100% compatibles avec votre véhicule Opel</li>
+                        <li>Prix compétitifs en dinar algérien</li>
+                        <li>Livraison rapide dans toute l'Algérie</li>
+                        <li>Service client disponible 7j/7</li>
+                        <li>Garantie sur toutes les pièces</li>
+                        <li>Expertise technique spécialisée Opel</li>
+                    </ul>
+                    <ul data-lang="ar" style="display:none;">
+                        <li>قطع غيار متوافقة 100% مع سيارتك أوبل</li>
+                        <li>أسعار تنافسية بالدينار الجزائري</li>
+                        <li>توصيل سريع في جميع أنحاء الجزائر</li>
+                        <li>خدمة العملاء متاحة 7 أيام في الأسبوع</li>
+                        <li>ضمان على جميع القطع</li>
+                        <li>خبرة فنية متخصصة في أوبل</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5" data-lang="fr">Contactez-nous</h2>
+            <h2 class="text-center mb-5" data-lang="ar" style="display:none;">اتصل بنا</h2>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title" data-lang="fr">Nos coordonnées</h3>
+                            <h3 class="card-title" data-lang="ar" style="display:none;">معلومات الاتصال</h3>
+                            <p><i class="fas fa-map-marker-alt me-2"></i> Halaimi Mohamed, Khmis Meliana, Ain Defla, Algérie</p>
+                            <p><i class="fas fa-phone me-2"></i> +213 782 065 342</p>
+                            <p><i class="fas fa-envelope me-2"></i> ishak327k@gmail.com</p>
+                            <div class="mt-4">
+                                <h4 data-lang="fr">Heures d'ouverture</h4>
+                                <h4 data-lang="ar" style="display:none;">ساعات العمل</h4>
+                                <p data-lang="fr">Lundi - Samedi: 8h00 - 18h00</p>
+                                <p data-lang="ar" style="display:none;">الإثنين - السبت: 8:00 - 18:00</p>
+                                <p data-lang="fr">Dimanche: 9h00 - 13h00</p>
+                                <p data-lang="ar" style="display:none;">الأحد: 9:00 - 13:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Nom complet" data-lang="fr">
+                            <input type="text" class="form-control" placeholder="الاسم الكامل" data-lang="ar" style="display:none;">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Email" data-lang="fr">
+                            <input type="email" class="form-control" placeholder="البريد الإلكتروني" data-lang="ar" style="display:none;">
+                        </div>
+                        <div class="mb-3">
+                            <input type="tel" class="form-control" placeholder="Téléphone" data-lang="fr">
+                            <input type="tel" class="form-control" placeholder="الهاتف" data-lang="ar" style="display:none;">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="4" placeholder="Votre message" data-lang="fr"></textarea>
+                            <textarea class="form-control" rows="4" placeholder="رسالتك" data-lang="ar" style="display:none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-lang="fr">Envoyer</button>
+                        <button type="submit" class="btn btn-primary" data-lang="ar" style="display:none;">إرسال</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h3 data-lang="fr">Benyahya AutoParts</h3>
+                    <h3 data-lang="ar" style="display:none;">بنيحيى لقطع الغيار</h3>
+                    <p data-lang="fr">Votre spécialiste en pièces détachées Opel en Algérie.</p>
+                    <p data-lang="ar" style="display:none;">متخصصك في قطع غيار أوبل في الجزائر.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h3 data-lang="fr">Liens rapides</h3>
+                    <h3 data-lang="ar" style="display:none;">روابط سريعة</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="#" data-lang="fr">Accueil</a><a href="#" data-lang="ar" style="display:none;">الرئيسية</a></li>
+                        <li><a href="#products" data-lang="fr">Produits</a><a href="#products" data-lang="ar" style="display:none;">المنتجات</a></li>
+                        <li><a href="#about" data-lang="fr">À propos</a><a href="#about" data-lang="ar" style="display:none;">معلومات عنا</a></li>
+                        <li><a href="#contact" data-lang="fr">Contact</a><a href="#contact" data-lang="ar" style="display:none;">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h3 data-lang="fr">Suivez-nous</h3>
+                    <h3 data-lang="ar" style="display:none;">تابعنا</h3>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="row">
+                <div class="col-md-6">
+                    <p data-lang="fr">&copy; 2023 Benyahya AutoParts. Tous droits réservés.</p>
+                    <p data-lang="ar" style="display:none;">&copy; 2023 بن يحيى لقطع الغيار. جميع الحقوق محفوظة.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white me-3" data-lang="fr">Conditions générales</a>
+                    <a href="#" class="text-white me-3" data-lang="ar" style="display:none;">الشروط والأحكام</a>
+                    <a href="#" class="text-white" data-lang="fr">Politique de confidentialité</a>
+                    <a href="#" class="text-white" data-lang="ar" style="display:none;">سياسة الخصوصية</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample product data - 36 Opel parts
+        const products = [
+            {
+                id: 1,
+                name: "Filtre à huile",
+                name_ar: "فلتر الزيت",
+                model: "Corsa",
+                category: "Filtration",
+                category_ar: "الفلترة",
+                price: 2500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 15,
+                compatible: "Opel Corsa D (2006-2014), Corsa E (2014-2019)",
+                compatible_ar: "أوبل كورسا D (2006-2014), كورسا E (2014-2019)"
+            },
+            {
+                id: 2,
+                name: "Plaquettes de frein avant",
+                name_ar: "وسادات الفرامل الأمامية",
+                model: "Astra",
+                category: "Freinage",
+                category_ar: "المكابح",
+                price: 8500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_13.png",
+                stock: 8,
+                compatible: "Opel Astra H (2004-2010), Astra J (2010-2015)",
+                compatible_ar: "أوبل أسترا H (2004-2010), أسترا J (2010-2015)"
+            },
+            {
+                id: 3,
+                name: "Amortisseur arrière",
+                name_ar: "ممتص الصدمات الخلفي",
+                model: "Vectra",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 12000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 4,
+                compatible: "Opel Vectra C (2002-2008)",
+                compatible_ar: "أوبل فيكترا C (2002-2008)"
+            },
+            {
+                id: 4,
+                name: "Kit de distribution",
+                name_ar: "طقم التوقيت",
+                model: "Zafira",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 32000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 3,
+                compatible: "Opel Zafira B (2005-2014) 1.8L",
+                compatible_ar: "أوبل زافيرا B (2005-2014) 1.8 لتر"
+            },
+            {
+                id: 5,
+                name: "Bougie d'allumage",
+                name_ar: "شمعة الإشعال",
+                model: "Corsa",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 1800,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 25,
+                compatible: "Opel Corsa D 1.4L (2006-2014)",
+                compatible_ar: "أوبل كورسا D 1.4 لتر (2006-2014)"
+            },
+            {
+                id: 6,
+                name: "Disque de frein avant",
+                name_ar: "قرص الفرامل الأمامي",
+                model: "Insignia",
+                category: "Freinage",
+                category_ar: "المكابح",
+                price: 15000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_13.png",
+                stock: 6,
+                compatible: "Opel Insignia A (2008-2017)",
+                compatible_ar: "أوبل إنسيجنيا A (2008-2017)"
+            },
+            {
+                id: 7,
+                name: "Roulement de roue avant",
+                name_ar: "محمل العجلة الأمامية",
+                model: "Meriva",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 9500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 0,
+                compatible: "Opel Meriva B (2010-2017)",
+                compatible_ar: "أوبل ميريفا B (2010-2017)"
+            },
+            {
+                id: 8,
+                name: "Alternateur",
+                name_ar: "الدينامو",
+                model: "Astra",
+                category: "Électricité",
+                category_ar: "الكهرباء",
+                price: 28000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_16.png",
+                stock: 2,
+                compatible: "Opel Astra H 1.7 CDTI (2004-2010)",
+                compatible_ar: "أوبل أسترا H 1.7 CDTI (2004-2010)"
+            },
+            {
+                id: 9,
+                name: "Embrayage kit",
+                name_ar: "طقم القابض",
+                model: "Vectra",
+                category: "Transmission",
+                category_ar: "ناقل الحركة",
+                price: 42000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_15.png",
+                stock: 3,
+                compatible: "Opel Vectra C 2.0L (2002-2008)",
+                compatible_ar: "أوبل فيكترا C 2.0 لتر (2002-2008)"
+            },
+            {
+                id: 10,
+                name: "Radiateur",
+                name_ar: "المشع",
+                model: "Mokka",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 18500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 5,
+                compatible: "Opel Mokka A 1.4L (2012-2016)",
+                compatible_ar: "أوبل موكا A 1.4 لتر (2012-2016)"
+            },
+            {
+                id: 11,
+                name: "Pompe à eau",
+                name_ar: "طرمبة الماء",
+                model: "Crossland",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 12500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 7,
+                compatible: "Opel Crossland X 1.2L (2017-2023)",
+                compatible_ar: "أوبل كروس لاند X 1.2 لتر (2017-2023)"
+            },
+            {
+                id: 12,
+                name: "Capteur ABS",
+                name_ar: "حساس ABS",
+                model: "Grandland",
+                category: "Freinage",
+                category_ar: "المكابح",
+                price: 7500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_13.png",
+                stock: 4,
+                compatible: "Opel Grandland X (2017-2023)",
+                compatible_ar: "أوبل جراند لاند X (2017-2023)"
+            },
+            {
+                id: 13,
+                name: "Batterie",
+                name_ar: "بطارية",
+                model: "Combo",
+                category: "Électricité",
+                category_ar: "الكهرباء",
+                price: 22000,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_16.png",
+                stock: 10,
+                compatible: "Opel Combo D 1.3 CDTI (2012-2018)",
+                compatible_ar: "أوبل كومبو D 1.3 CDTI (2012-2018)"
+            },
+            {
+                id: 14,
+                name: "Phare avant gauche",
+                name_ar: "المصباح الأمامي الأيسر",
+                model: "Astra",
+                category: "Carrosserie",
+                category_ar: "هيكل السيارة",
+                price: 18500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_17.png",
+                stock: 3,
+                compatible: "Opel Astra K (2015-2021)",
+                compatible_ar: "أوبل أسترا K (2015-2021)"
+            },
+            {
+                id: 15,
+                name: "Filtre à air",
+                name_ar: "فلتر الهواء",
+                model: "Corsa",
+                category: "Filtration",
+                category_ar: "الفلترة",
+                price: 3200,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 18,
+                compatible: "Opel Corsa E 1.2L (2014-2019)",
+                compatible_ar: "أوبل كورسا E 1.2 لتر (2014-2019)"
+            },
+            {
+                id: 16,
+                name: "Silentbloc triangle",
+                name_ar: "سيلينت بلوك",
+                model: "Zafira",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 6500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 6,
+                compatible: "Opel Zafira B (2005-2014)",
+                compatible_ar: "أوبل زافيرا B (2005-2014)"
+            },
+            {
+                id: 17,
+                name: "Bougie de préchauffage",
+                name_ar: "شمعة التسخين",
+                model: "Movano",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 2800,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 12,
+                compatible: "Opel Movano B 2.3 CDTI (2010-2021)",
+                compatible_ar: "أوبل موفانو B 2.3 CDTI (2010-2021)"
+            },
+            {
+                id: 18,
+                name: "Courroie accessoire",
+                name_ar: "سير الملحقات",
+                model: "Insignia",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 9800,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 5,
+                compatible: "Opel Insignia B 2.0L (2017-2022)",
+                compatible_ar: "أوبل إنسيجنيا B 2.0 لتر (2017-2022)"
+            },
+            {
+                id: 19,
+                name: "Pot d'échappement",
+                name_ar: "شكمان العادم",
+                model: "Vectra",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 24500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 2,
+                compatible: "Opel Vectra C 1.8L (2002-2008)",
+                compatible_ar: "أوبل فيكترا C 1.8 لتر (2002-2008)"
+            },
+            {
+                id: 20,
+                name: "Rétroviseur extérieur droit",
+                name_ar: "مرآة الرؤية الخلفية الخارجية اليمنى",
+                model: "Meriva",
+                category: "Carrosserie",
+                category_ar: "هيكل السيارة",
+                price: 12500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_17.png",
+                stock: 3,
+                compatible: "Opel Meriva A (2003-2010)",
+                compatible_ar: "أوبل ميريفا A (2003-2010)"
+            },
+            {
+                id: 21,
+                name: "Kit courroie distribution",
+                name_ar: "طقم سير التوقيت",
+                model: "Corsa",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 28500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 4,
+                compatible: "Opel Corsa D 1.7 CDTI (2006-2014)",
+                compatible_ar: "أوبل كورسا D 1.7 CDTI (2006-2014)"
+            },
+            {
+                id: 22,
+                name: "Pompe à carburant",
+                name_ar: "طرمبة البنزين",
+                model: "Astra",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 19500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 3,
+                compatible: "Opel Astra J 1.6L (2010-2015)",
+                compatible_ar: "أوبل أسترا J 1.6 لتر (2010-2015)"
+            },
+            {
+                id: 23,
+                name: "Rotule de direction",
+                name_ar: "رأس التوجيه",
+                model: "Mokka",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 8500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 7,
+                compatible: "Opel Mokka A (2012-2016)",
+                compatible_ar: "أوبل موكا A (2012-2016)"
+            },
+            {
+                id: 24,
+                name: "Ventilateur radiateur",
+                name_ar: "مروحة المشع",
+                model: "Zafira",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 16500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 2,
+                compatible: "Opel Zafira B 2.0L (2005-2014)",
+                compatible_ar: "أوبل زافيرا B 2.0 لتر (2005-2014)"
+            },
+            {
+                id: 25,
+                name: "Flexible de frein",
+                name_ar: "خرطوم الفرامل",
+                model: "Vectra",
+                category: "Freinage",
+                category_ar: "المكابح",
+                price: 4500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_13.png",
+                stock: 9,
+                compatible: "Opel Vectra C (2002-2008)",
+                compatible_ar: "أوبل فيكترا C (2002-2008)"
+            },
+            {
+                id: 26,
+                name: "Bouchon de remplissage d'huile",
+                name_ar: "غطاء تعبئة الزيت",
+                model: "Insignia",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 2800,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 15,
+                compatible: "Opel Insignia A (2008-2017)",
+                compatible_ar: "أوبل إنسيجنيا A (2008-2017)"
+            },
+            {
+                id: 27,
+                name: "Joint de culasse",
+                name_ar: "جلب السلندر",
+                model: "Astra",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 12500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 4,
+                compatible: "Opel Astra H 1.6L (2004-2010)",
+                compatible_ar: "أوبل أسترا H 1.6 لتر (2004-2010)"
+            },
+            {
+                id: 28,
+                name: "Biellette de barre stabilisatrice",
+                name_ar: "ذراع المثبت",
+                model: "Crossland",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 6800,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 6,
+                compatible: "Opel Crossland X (2017-2023)",
+                compatible_ar: "أوبل كروس لاند X (2017-2023)"
+            },
+            {
+                id: 29,
+                name: "Câble d'accélérateur",
+                name_ar: "كابل التسريع",
+                model: "Combo",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 7500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 3,
+                compatible: "Opel Combo C 1.7 CDTI (2001-2011)",
+                compatible_ar: "أوبل كومبو C 1.7 CDTI (2001-2011)"
+            },
+            {
+                id: 30,
+                name: "Capteur de pression des pneus",
+                name_ar: "حساس ضغط الإطارات",
+                model: "Grandland",
+                category: "Électricité",
+                category_ar: "الكهرباء",
+                price: 11500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_16.png",
+                stock: 5,
+                compatible: "Opel Grandland X (2017-2023)",
+                compatible_ar: "أوبل جراند لاند X (2017-2023)"
+            },
+            {
+                id: 31,
+                name: "Filtre à carburant",
+                name_ar: "فلتر الوقود",
+                model: "Movano",
+                category: "Filtration",
+                category_ar: "الفلترة",
+                price: 6500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 8,
+                compatible: "Opel Movano B 2.3 CDTI (2010-2021)",
+                compatible_ar: "أوبل موفانو B 2.3 CDTI (2010-2021)"
+            },
+            {
+                id: 32,
+                name: "Pare-chocs avant",
+                name_ar: "المصد الأمامي",
+                model: "Corsa",
+                category: "Carrosserie",
+                category_ar: "هيكل السيارة",
+                price: 24500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_17.png",
+                stock: 2,
+                compatible: "Opel Corsa E (2014-2019)",
+                compatible_ar: "أوبل كورسا E (2014-2019)"
+            },
+            {
+                id: 33,
+                name: "Vanne EGR",
+                name_ar: "صمام EGR",
+                model: "Astra",
+                category: "Moteur",
+                category_ar: "المحرك",
+                price: 18500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_12.png",
+                stock: 3,
+                compatible: "Opel Astra K 1.6 CDTI (2015-2021)",
+                compatible_ar: "أوبل أسترا K 1.6 CDTI (2015-2021)"
+            },
+            {
+                id: 34,
+                name: "Kit réparation étrier frein",
+                name_ar: "طقم إصلاح كابح الفرامل",
+                model: "Zafira",
+                category: "Freinage",
+                category_ar: "المكابح",
+                price: 7500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_13.png",
+                stock: 4,
+                compatible: "Opel Zafira B (2005-2014)",
+                compatible_ar: "أوبل زافيرا B (2005-2014)"
+            },
+            {
+                id: 35,
+                name: "Bras de suspension",
+                name_ar: "ذراع التعليق",
+                model: "Vectra",
+                category: "Suspension",
+                category_ar: "التعليق",
+                price: 12500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_14.png",
+                stock: 3,
+                compatible: "Opel Vectra C (2002-2008)",
+                compatible_ar: "أوبل فيكترا C (2002-2008)"
+            },
+            {
+                id: 36,
+                name: "Module de commande moteur",
+                name_ar: "وحدة التحكم في المحرك",
+                model: "Insignia",
+                category: "Électricité",
+                category_ar: "الكهرباء",
+                price: 48500,
+                image: "https://www.autodoc.co.uk/pics/cat/categories/r_16.png",
+                stock: 1,
+                compatible: "Opel Insignia A 2.0L (2008-2017)",
+                compatible_ar: "أوبل إنسيجنيا A 2.0 لتر (2008-2017)"
+            }
+        ];
+
+        // Language switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with French
+            switchLanguage('fr');
+            
+            // Language switcher click event
+            document.querySelector('.language-switcher').addEventListener('click', function() {
+                const currentLang = document.querySelector('[data-lang="fr"]').style.display === 'none' ? 'ar' : 'fr';
+                const newLang = currentLang === 'fr' ? 'ar' : 'fr';
+                switchLanguage(newLang);
+            });
+            
+            // Admin toggle functionality
+            document.getElementById('adminToggle').addEventListener('click', function() {
+                document.body.classList.toggle('admin-view');
+                const isAdmin = document.body.classList.contains('admin-view');
+                if (isAdmin) {
+                    this.innerHTML = '<i class="fas fa-eye"></i> <span data-lang="fr">Vue Normale</span><span data-lang="ar" style="display:none;">عرض عادي</span>';
+                } else {
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i> <span data-lang="fr">Vue Admin</span><span data-lang="ar" style="display:none;">وحة التحكم</span>';
+                }
+                // Update language display for admin toggle
+                const currentLang = document.querySelector('[data-lang="fr"]').style.display === 'none' ? 'ar' : 'fr';
+                this.querySelector(`[data-lang="${currentLang}"]`).style.display = '';
+                this.querySelector(`[data-lang="${currentLang === 'fr' ? 'ar' : 'fr'}"]`).style.display = 'none';
+            });
+            
+            // Render products
+            renderProducts(products);
+            
+            // Filter functionality
+            document.getElementById('modelFilter').addEventListener('change', filterProducts);
+            document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+        });
+        
+        function switchLanguage(lang) {
+            // Hide all elements for both languages
+            document.querySelectorAll('[data-lang="fr"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('[data-lang="ar"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show elements for selected language
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
+                el.style.display = '';
+            });
+            
+            // Update dir attribute for Arabic
+            if (lang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                document.body.classList.add('rtl-text');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'fr';
+                document.body.classList.remove('rtl-text');
+            }
+            
+            // Re-render products with new language
+            filterProducts();
+        }
+        
+        function renderProducts(productsToRender) {
+            const container = document.getElementById('productContainer');
+            container.innerHTML = '';
+            
+            const currentLang = document.querySelector('[data-lang="fr"]').style.display === 'none' ? 'ar' : 'fr';
+            
+            if (productsToRender.length === 0) {
+                const noProducts = document.createElement('div');
+                noProducts.className = 'col-12 text-center';
+                noProducts.textContent = currentLang === 'fr' 
+                    ? 'Aucun produit trouvé' 
+                    : 'لم يتم العثور على منتجات';
+                container.appendChild(noProducts);
+                return;
+            }
+            
+            productsToRender.forEach(product => {
+                const stockStatus = product.stock > 0 
+                    ? `<span class="badge bg-success">${currentLang === 'fr' ? 'En stock' : 'متوفر'}</span>` 
+                    : `<span class="badge bg-danger">${currentLang === 'fr' ? 'Rupture' : 'نفذ'}</span>`;
+                
+                const stockInfo = `<div class="hidden-stock">Stock: ${product.stock}</div>`;
+                
+                const card = `
+                    <div class="col-md-4 col-6 mb-4">
+                        <div class="card product-card h-100">
+                            ${stockStatus}
+                            <img src="${product.image}" class="card-img-top product-img" alt="${currentLang === 'fr' ? product.name : product.name_ar}">
+                            <div class="card-body">
+                                <h5 class="card-title">${currentLang === 'fr' ? product.name : product.name_ar}</h5>
+                                <p class="card-text"><strong>${currentLang === 'fr' ? 'Modèle:' : 'الموديل:'}</strong> Opel ${product.model}</p>
+                                <p class="card-text"><strong>${currentLang === 'fr' ? 'Compatibilité:' : 'التوافق:'}</strong> ${currentLang === 'fr' ? product.compatible : product.compatible_ar}</p>
+                                <p class="card-text"><strong>${currentLang === 'fr' ? 'Catégorie:' : 'الفئة:'}</strong> ${currentLang === 'fr' ? product.category : product.category_ar}</p>
+                                <p class="price">${product.price.toLocaleString()} DZD</p>
+                                ${stockInfo}
+                                <button class="btn btn-primary w-100">${currentLang === 'fr' ? 'Commander' : 'اطلب الآن'}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                container.innerHTML += card;
+            });
+        }
+        
+        function filterProducts() {
+            const modelFilter = document.getElementById('modelFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const currentLang = document.querySelector('[data-lang="fr"]').style.display === 'none' ? 'ar' : 'fr';
+            
+            let filteredProducts = products;
+            
+            if (modelFilter) {
+                filteredProducts = filteredProducts.filter(product => product.model === modelFilter);
+            }
+            
+            if (categoryFilter) {
+                const categoryField = currentLang === 'fr' ? 'category' : 'category_ar';
+                filteredProducts = filteredProducts.filter(product => product[categoryField] === categoryFilter);
+            }
+            
+            renderProducts(filteredProducts);
+        }
+    </script>
+</body>
+</html>
